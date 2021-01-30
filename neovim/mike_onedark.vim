@@ -1,4 +1,4 @@
-" Copy this file to ./share/nvim/plugged/vim-colorschemes/colors/mike_onedark.vim
+" Copy this file to ~/.local/share/nvim/plugged/vim-colorschemes/colors/mike_onedark.vim
 
 " Vim Color File
 " Name:       onedark.vim
