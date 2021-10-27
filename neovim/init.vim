@@ -10,7 +10,11 @@
 call plug#begin('~/.local/share/nvim/plugged')
 
 " NerdTree directory browser
-Plug 'scrooloose/nerdtree'
+" git and dev icons for NerdTree (need special font)
+Plug 'preservim/nerdtree' |
+            \ Plug 'Xuyuanp/nerdtree-git-plugin' |
+            \ Plug 'ryanoasis/vim-devicons' |
+            \ Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 " color schemes
 Plug 'flazz/vim-colorschemes'
 " enhanced c++ syntax highlighting
@@ -20,7 +24,7 @@ Plug 'vim-airline/vim-airline'
 " airline status bar themes
 Plug 'vim-airline/vim-airline-themes'
 " fuzzy finder (fzf)
-Plug '/usr/local/opt/fzf'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 " easier commenting
 Plug 'tpope/vim-commentary'
