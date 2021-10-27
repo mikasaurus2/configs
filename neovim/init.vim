@@ -40,6 +40,14 @@ Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 " GoLang
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+" javascript highlighting
+Plug 'pangloss/vim-javascript'
+" javascript formatter
+Plug 'prettier/vim-prettier', {
+  \ 'do': 'yarn install',
+  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte', 'yaml', 'html'] }
+" Python formatter
+Plug 'psf/black', { 'branch': 'stable' }
 
 " Initialize plugin system
 call plug#end()
@@ -69,16 +77,17 @@ nnoremap <Leader>cx r<C-k>XX
 "nnoremap <silent><C-?> :set paste<CR>m`o<Esc>``:set nopaste<CR>
 "nnoremap <silent><C-?> :set paste<CR>m`O<Esc>``:set nopaste<CR>
 
-" clang formatting
+" formatting
 "map <C-l> :pyf /usr/local/Cellar/clang-format/2016-01-05/share/clang/clang-format.py<cr>
-autocmd Filetype cpp map <buffer> <C-l> :pyf /usr/local/Cellar/clang-format/2016-08-03/share/clang/clang-format.py<cr>
+autocmd Filetype cpp map <buffer> <C-l> :py3f /usr/share/clang/clang-format-12/clang-format.py<cr>
 autocmd Filetype rust nmap <buffer> <C-l> :RustFmt<cr>
 autocmd Filetype rust vmap <buffer> <C-l> :RustFmt<cr>
+autocmd Filetype python map <buffer> <C-l> :Black<cr>
 
 " ripgrep
-nnoremap <Leader>r :Rg 
+nnoremap <Leader>r :Rg
 " fugitive git commands
-nnoremap <Leader>g :G 
+nnoremap <Leader>g :G
 " neovim terminal
 nnoremap <Leader>z :vnew<CR>:terminal<CR>isource $HOME/.bash_profile<CR>
 " quick :q
