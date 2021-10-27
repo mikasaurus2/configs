@@ -55,7 +55,7 @@ Plug 'hrsh7th/vim-vsnip'
 " snippets
 Plug 'rafamadriz/friendly-snippets'
 " onedark color scheme for nvim >= 0.5
-Plug 'navarasu/onedark.nvim'
+Plug 'mikasaurus2/onedark.nvim'
 
 " ============
 " Rust plugins
