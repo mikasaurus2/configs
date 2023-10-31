@@ -1,6 +1,11 @@
 " Copy this file to ~/.config/nvim/init.vim
 " Neovim version must be >= 0.5
 
+" some options for polyglot have to be at the top
+set nocompatible
+let g:polyglot_disabled = ['markdown']
+
+
 " ===============================================
 " Plugins
 " ===============================================
@@ -15,8 +20,8 @@ call plug#begin('~/.local/share/nvim/plugged')
 " https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/SourceCodePro/Regular/complete
 Plug 'preservim/nerdtree' |
             \ Plug 'Xuyuanp/nerdtree-git-plugin' |
-            \ Plug 'ryanoasis/vim-devicons' |
-            \ Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+            \ Plug 'ryanoasis/vim-devicons'
+            " \ Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 " color schemes
 "Plug 'flazz/vim-colorschemes'
 " enhanced c++ syntax highlighting
@@ -32,10 +37,6 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 " rust
 Plug 'rust-lang/rust.vim'
-" syntax checker
-Plug 'vim-syntastic/syntastic'
-" vim snippets
-Plug 'hrsh7th/vim-vsnip'
 " GoLang
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 " javascript highlighting
@@ -52,25 +53,49 @@ Plug 'neovim/nvim-lspconfig'
 Plug 'folke/lsp-colors.nvim'
 " snippet engine
 Plug 'hrsh7th/vim-vsnip'
+"Plug 'hrsh7th/vim-vsnip-integ'
 " snippets
 Plug 'rafamadriz/friendly-snippets'
 " onedark color scheme for nvim >= 0.5
 Plug 'mikasaurus2/onedark.nvim'
+" git diff indicaters in gutter
+Plug 'airblade/vim-gitgutter'
+" indicate marks in gutter
+Plug 'kshenoy/vim-signature'
+" syntax highlighting for various files
+Plug 'sheerun/vim-polyglot'
+" Markdown viewer
+" If you don't have nodejs and yarn
+" use pre build, add 'vim-plug' to the filetype list so vim-plug can update this plugin
+" see: https://github.com/iamcco/markdown-preview.nvim/issues/50
+"Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
+" Trouble allows better viewing of LSP errors
+Plug 'nvim-tree/nvim-web-devicons'
+Plug 'folke/trouble.nvim'
+" completion engine
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/nvim-cmp'
+
 
 " ============
 " Rust plugins
 " ============
 " Completion framework
-Plug 'hrsh7th/nvim-cmp'
+" Plug 'hrsh7th/nvim-cmp'
 " LSP completion source for nvim-cmp
-Plug 'hrsh7th/cmp-nvim-lsp'
+" Plug 'hrsh7th/cmp-nvim-lsp'
 " Snippet completion source for nvim-cmp
-Plug 'hrsh7th/cmp-vsnip'
+" Plug 'hrsh7th/cmp-vsnip'
 " Other useful completion sources
-Plug 'hrsh7th/cmp-path'
-Plug 'hrsh7th/cmp-buffer'
+" Plug 'hrsh7th/cmp-path'
+" Plug 'hrsh7th/cmp-buffer'
 " To enable more of the features of rust-analyzer, such as inlay hints and more!
-Plug 'simrat39/rust-tools.nvim'
+" Plug 'simrat39/rust-tools.nvim'
 
 " Initialize plugin system
 call plug#end()
@@ -105,14 +130,14 @@ nnoremap <Leader>cx r<C-k>XX
 autocmd Filetype cpp map <buffer> <C-l> :py3f /usr/share/clang/clang-format-12/clang-format.py<cr>
 autocmd Filetype rust nmap <buffer> <C-l> :RustFmt<cr>
 autocmd Filetype rust vmap <buffer> <C-l> :RustFmt<cr>
-autocmd Filetype python map <buffer> <C-l> :Black<cr>
+autocmd Filetype python map <buffer> <C-l> :!black %<cr>
 
 " ripgrep
 nnoremap <Leader>r :Rg 
 " fugitive git commands
 nnoremap <Leader>g :G 
 " neovim terminal
-nnoremap <Leader>z :vnew<CR>:terminal<CR>isource $HOME/.bashrc<CR>
+nnoremap <Leader>z :vnew<CR>:terminal<CR>isource $HOME/.zprofile<CR>
 " quick :q
 nmap <silent> <Leader>q :q<CR>
 
@@ -168,6 +193,12 @@ nnoremap <silent> ]q :cn<CR>
 " easier navigation for list window
 nnoremap <silent> [l :lprevious<CR>
 nnoremap <silent> ]l :lnext<CR>
+
+" NVim in recent versions made Shift-Space a control character when in
+" terminal. When I'm using unix pipes | and space afterwards, I still
+" sometimes hold shift, and this screws up the command line.
+" This remap makes Shift-Space simply Space in terminal.
+tnoremap <S-Space> <Space>
 
 " fzf options
 " Customize fzf colors to match your color scheme
@@ -257,70 +288,81 @@ set tags=./tags;~/devel
 " use rusty-tags.vi tags file when opening Rust files
 autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/
 
-" syntax checker
-" ctrl-s to run checker
-map <C-s> :SyntasticCheck<CR>
+" gitgutter mappings to stage and unstage hunks in file
+nmap ghs <Plug>(GitGutterStageHunk)
+nmap ghu <Plug>(GitGutterUndoHunk)
+nmap ghp <Plug>(GitGutterPreviewHunk)
+" this controls how quick gitgutter shows diff signs
+set updatetime=250
 
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-
-let g:syntastic_mode_map = {
-    \ "mode": "passive",
-    \ "active_filetypes": [],
-    \ "passive_filetypes": [] }
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 0
-let g:syntastic_check_on_wq = 0
+" better golang highlighting
+" To change syntax class, see vim-go/syntax/go.vim
+let g:go_highlight_types = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_function_calls = 1
+"let g:go_highlight_variable_declarations = 1
 
 " ===============================================
 " Language Server Config
 " https://github.com/neovim/nvim-lspconfig
 " ===============================================
-
+ 
 lua << EOF
 local nvim_lsp = require('lspconfig')
 
--- Use an on_attach function to only map the following keys
+-- Global mappings.
+-- See `:help vim.diagnostic.*` for documentation on any of the below functions
+vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+--vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
+
+-- Use LspAttach autocommand to only map the following keys
 -- after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
-  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+  callback = function(ev)
+    -- Enable completion triggered by <c-x><c-o>
+    vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
-  -- Enable completion triggered by <c-x><c-o>
-  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+    -- Buffer local mappings.
+    -- See `:help vim.lsp.*` for documentation on any of the below functions
+    local opts = { buffer = ev.buf }
+    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+    vim.keymap.set('n', '<c-]>', vim.lsp.buf.definition, opts)
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+    vim.keymap.set('n', '<C-s>', vim.lsp.buf.signature_help, opts)
+    vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
+    vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
+    vim.keymap.set('n', '<space>wl', function()
+      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    end, opts)
+    vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
+    vim.keymap.set('n', '<space>n', vim.lsp.buf.rename, opts)
+    vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+    --vim.keymap.set('n', '<space>f', function()
+    --  vim.lsp.buf.format { async = true }
+    --end, opts)
+  end,
+})
 
-  -- Mappings.
-  local opts = { noremap=true, silent=true }
-
-  -- See `:help vim.lsp.*` for documentation on any of the below functions
-  buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  buf_set_keymap('n', '<c-]>', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  --buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  --buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-  --buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-  --buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-  buf_set_keymap('n', '<space>cn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
-  buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-  --buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-  --buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
-
-end
--- Add additional capabilities supported by nvim-cmp
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+-- -- Add additional capabilities supported by nvim-cmp
+-- local capabilities = vim.lsp.protocol.make_client_capabilities()
+-- capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
-local servers = { 'pylsp', 'rust_analyzer' }
+-- Rust: rust_analyzer
+-- Python: pylsp
+--     pip3 install python-lsp-server
+--     pip3 install ruff (fast python linter)
+--     pip3 install python-lsp-ruff (python lsp plugin for ruff)
+--     pip3 install pylsp-mypy (mypy static checker, .mypy.ini file in $HOME)
+-- Golang: gopls
+local servers = { 'pylsp', 'gopls' }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {
     on_attach = on_attach,
@@ -337,29 +379,30 @@ EOF
 " https://github.com/hrsh7th/nvim-cmp
 " ===============================================
 lua <<EOF
-  -- Setup nvim-cmp.
+  -- Set up nvim-cmp.
   local cmp = require'cmp'
 
   cmp.setup({
     snippet = {
+      -- REQUIRED - you must specify a snippet engine
       expand = function(args)
         vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
         -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+        -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
         -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
-        -- require'snippy'.expand_snippet(args.body) -- For `snippy` users.
       end,
     },
-    mapping = {
-      ['<C-d>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
-      ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
-      ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
-      ['<C-y>'] = cmp.config.disable, -- If you want to remove the default `<C-y>` mapping, You can specify `cmp.config.disable` value.
-      ['<C-e>'] = cmp.mapping({
-        i = cmp.mapping.abort(),
-        c = cmp.mapping.close(),
-      }),
-      ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    window = {
+      -- completion = cmp.config.window.bordered(),
+      -- documentation = cmp.config.window.bordered(),
     },
+    mapping = cmp.mapping.preset.insert({
+      ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<C-e>'] = cmp.mapping.abort(),
+      ['<CR>'] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+    }),
     sources = cmp.config.sources({
       { name = 'nvim_lsp' },
       { name = 'vsnip' }, -- For vsnip users.
@@ -371,33 +414,61 @@ lua <<EOF
     })
   })
 
-  -- Use buffer source for `/`.
-  cmp.setup.cmdline('/', {
+  -- Set configuration for specific filetype.
+  cmp.setup.filetype('gitcommit', {
+    sources = cmp.config.sources({
+      { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it.
+    }, {
+      { name = 'buffer' },
+    })
+  })
+
+  -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline({ '/', '?' }, {
+    mapping = cmp.mapping.preset.cmdline(),
     sources = {
       { name = 'buffer' }
     }
   })
 
-  -- Use cmdline & path source for ':'.
+  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
   cmp.setup.cmdline(':', {
+    mapping = cmp.mapping.preset.cmdline(),
     sources = cmp.config.sources({
       { name = 'path' }
     }, {
       { name = 'cmdline' }
     })
   })
+
+  -- Set up lspconfig.
+  local capabilities = require('cmp_nvim_lsp').default_capabilities()
+  -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
+  require('lspconfig')['pylsp'].setup {
+    capabilities = capabilities
+  }
+  require('lspconfig')['gopls'].setup {
+    capabilities = capabilities
+  }
 EOF
 
 " ===============================================
 " snippet controls
 " https://github.com/hrsh7th/vim-vsnip
 " ===============================================
+" Expand
+imap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+smap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+
+" Expand or jump
+imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+
 " Jump forward or backward
 imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
 smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
 imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
-
 
 " ===============================================
 " lualine config
@@ -410,4 +481,16 @@ require('lualine').setup {
     -- ... your lualine config
   }
 }
+EOF
+
+" ===============================================
+" trouble
+" https://github.com/folke/trouble.nvim
+" ===============================================
+lua << EOF
+  require("trouble").setup {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+  }
 EOF
