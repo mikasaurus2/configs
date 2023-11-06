@@ -13,8 +13,23 @@ Install [Pure](https://github.com/sindresorhus/pure) prompt.
 
 Install plugins: [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions/blob/master/INSTALL.md) and [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/INSTALL.md.)
 
-Copy the config file
+Copy the config file.
 
 ```
-cp zshrc ~/.zshrc
+cp zshell/zshrc ~/.zshrc
+```
+
+## Terminator (terminal emulator)
+I use this one on Linux systems over the default.
+
+Install Terminator.
+
+```
+apt install terminator
+```
+
+Copy the config file.
+
+```
+cp terminator/config ~/.config/terminator/config
 ```
