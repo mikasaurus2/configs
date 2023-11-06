@@ -16,5 +16,5 @@ Install plugins: [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosugg
 Copy the config file
 
 ```
-    cp zshrc ~/.zshrc
+cp zshrc ~/.zshrc
 ```
