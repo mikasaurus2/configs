@@ -2,8 +2,8 @@
   title_transmit_bg_color = "#5e8934"
   always_split_with_profile = True
 [keybindings]
-  split_horiz = <Primary>d
-  split_vert = <Primary><Shift>d
+  split_horiz = <Alt>d
+  split_vert = <Shift><Alt>d
   close_term = <Primary>w
   switch_to_tab_1 = <Primary>1
   switch_to_tab_2 = <Primary>2
@@ -26,7 +26,7 @@
     cursor_color = "#aaaaaa"
     font = Source Code Pro Semi-Bold 12
     foreground_color = "#ffffff"
-    palette = "#000000:#c44545:#65d165:#d1d140:#5353ec:#cb48cb:#57d2d2:#e5e5e5:#7f7f7f:#ff0000:#00ff00:#ffff00:#5c5cff:#ff00ff:#00ffff:#ffffff"
+    palette = "#000000:#c44545:#65d165:#d1d140:#4b4bf8:#cb48cb:#57d2d2:#e5e5e5:#7f7f7f:#ff0000:#00ff00:#ffff00:#5c5cff:#ff00ff:#00ffff:#ffffff"
     use_system_font = False
 [layouts]
   [[default]]
