@@ -2,9 +2,11 @@
   title_transmit_bg_color = "#5e8934"
   always_split_with_profile = True
 [keybindings]
+  go_next = <Alt>bracketright
+  go_prev = <Alt>bracketleft
   split_horiz = <Alt>d
   split_vert = <Shift><Alt>d
-  close_term = <Primary>w
+  close_term = <Alt>w
   switch_to_tab_1 = <Primary>1
   switch_to_tab_2 = <Primary>2
   switch_to_tab_3 = <Primary>3
