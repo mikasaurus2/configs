@@ -66,6 +66,9 @@ ZSH_THEME=""
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
+# Do the initialization when the script is sourced (i.e. Initialize instantly)
+ZVM_INIT_MODE=sourcing
+
 # Which plugins would you like to load?
 # Standard plugins can be found in $ZSH/plugins/
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
@@ -74,6 +77,7 @@ ZSH_THEME=""
 plugins=(
     git
     docker
+    tmux
     zsh-autosuggestions
     zsh-syntax-highlighting
 )
@@ -112,6 +116,11 @@ prompt pure
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#bcbcbc,bg=#080808,bold,underline"
+set -o vi
 
 # Fuzzy finder FZF
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+
+# hook for direnv
+eval "$(direnv hook zsh)"
